@@ -7,6 +7,9 @@ module.exports = function (app) {
 
     app.route("/api/check").post((req, res) => {
         //rows:
+        let coordinateArray = [...req.body.coordinate];
+        let row = coordinateArray[0];
+        let col = coordinateArray[1];
         let puzzleString = req.body.puzzle;
         let rows = [];
         for (let i = 0; i < puzzleString.length; i += 9) {
