@@ -11,7 +11,17 @@ class SudokuSolver {
         }
     }
 
-    checkRowPlacement(puzzleString, row, column, value) {}
+    checkRowPlacement(puzzleString, row, column, value) {
+        let rows = [];
+        for (let i = 0; i < puzzleString.length; i += 9) {
+            rows.push(puzzleString.slice(i, i + 9));
+        }
+        if (rows[row].includes(value)) {
+            return { valid: false };
+        } else {
+            return { valid: true };
+        }
+    }
 
     checkColPlacement(puzzleString, row, column, value) {}
 

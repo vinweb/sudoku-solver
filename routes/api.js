@@ -8,13 +8,42 @@ module.exports = function (app) {
     app.route("/api/check").post((req, res) => {
         //rows:
         let coordinateArray = [...req.body.coordinate];
-        let row = coordinateArray[0];
-        let col = coordinateArray[1];
+        let row;
+        let column = coordinateArray[1];
         let puzzleString = req.body.puzzle;
-        let rows = [];
-        for (let i = 0; i < puzzleString.length; i += 9) {
-            rows.push(puzzleString.slice(i, i + 9));
+        let value = req.body.value;
+        switch (coordinateArray[0]) {
+            case "A":
+                row = "0";
+                break;
+            case "B":
+                row = "1";
+                break;
+            case "C":
+                row = "2";
+                break;
+            case "D":
+                row = "3";
+                break;
+            case "E":
+                row = "4";
+                break;
+            case "F":
+                row = "5";
+                break;
+            case "G":
+                row = "6";
+                break;
+            case "H":
+                row = "7";
+                break;
+            case "I":
+                row = "8";
+                break;
         }
+        return res.json(
+            solver.checkRowPlacement(puzzleString, row, column, value)
+        );
         //cols:
         let cols = [];
         let cols2d = [];
