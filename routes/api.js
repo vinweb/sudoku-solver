@@ -6,12 +6,13 @@ module.exports = function (app) {
     let solver = new SudokuSolver();
 
     app.route("/api/check").post((req, res) => {
-        //rows:
         let coordinateArray = [...req.body.coordinate];
         let row;
         let column = coordinateArray[1];
         let puzzleString = req.body.puzzle;
         let value = req.body.value;
+        let region;
+        //rows:
         switch (coordinateArray[0]) {
             case "A":
                 row = "0";
@@ -41,37 +42,116 @@ module.exports = function (app) {
                 row = "8";
                 break;
         }
+        switch (req.body.coordinate) {
+            case "A1":
+            case "A2":
+            case "A3":
+            case "B1":
+            case "B2":
+            case "B3":
+            case "C1":
+            case "C2":
+            case "C3":
+                region = "0";
+                break;
+            case "D1":
+            case "D2":
+            case "D3":
+            case "E1":
+            case "E2":
+            case "E3":
+            case "F1":
+            case "F2":
+            case "F3":
+                region = "3";
+                break;
+            case "G1":
+            case "G2":
+            case "G3":
+            case "H1":
+            case "H2":
+            case "H3":
+            case "I1":
+            case "I2":
+            case "I3":
+                region = "6";
+                break;
+            case "A4":
+            case "A5":
+            case "A6":
+            case "B4":
+            case "B5":
+            case "B6":
+            case "C4":
+            case "C5":
+            case "C6":
+                region = "1";
+                break;
+            case "D4":
+            case "D5":
+            case "D6":
+            case "E4":
+            case "E5":
+            case "E6":
+            case "F4":
+            case "F5":
+            case "F6":
+                region = "4";
+                break;
+            case "G4":
+            case "G5":
+            case "G6":
+            case "H4":
+            case "H5":
+            case "H6":
+            case "I4":
+            case "I5":
+            case "I6":
+                region = "7";
+                break;
+            case "A7":
+            case "A8":
+            case "A9":
+            case "B7":
+            case "B8":
+            case "B9":
+            case "C7":
+            case "C8":
+            case "C9":
+                region = "2";
+                break;
+            case "D7":
+            case "D8":
+            case "D9":
+            case "E7":
+            case "E8":
+            case "E9":
+            case "F7":
+            case "F8":
+            case "F9":
+                region = "5";
+                break;
+            case "G7":
+            case "G8":
+            case "G9":
+            case "H7":
+            case "H8":
+            case "H9":
+            case "I7":
+            case "I8":
+            case "I9":
+                region = "8";
+                break;
+        }
+        solver.checkRowPlacement(puzzleString, row, value);
+        solver.checkColPlacement(column, value);
         return res.json(
-            solver.checkRowPlacement(puzzleString, row, column, value)
+            solver.checkRegionPlacement(puzzleString, region, value)
         );
+
         //cols:
-        let cols = [];
-        let cols2d = [];
-        for (let j = 0; j < 9; j++) {
-            for (let i = 0; i < 9; i++) {
-                cols2d.push(rows[i].slice(j, j + 1));
-            }
-        }
-        let cols1d = [].concat(...cols2d);
-        let colString = cols1d.join("");
-        for (let i = 0; i < colString.length; i += 9) {
-            cols.push(colString.slice(i, i + 9));
-        }
+
         //regions:
-        let regions = [];
-        let subreg = [];
-        for (let i = 0; i < puzzleString.length; i += 3) {
-            subreg.push(puzzleString.slice(i, i + 3));
-        }
-        for (let j = 0; j < 27; j += 9) {
-            for (let i = 0; i < 3; i++) {
-                regions.push(
-                    [subreg[j + i], subreg[j + i + 3], subreg[j + i + 6]].join(
-                        ""
-                    )
-                );
-            }
-        }
     });
 
     app.route("/api/solve").post((req, res) => {
