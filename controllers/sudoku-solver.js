@@ -1,10 +1,9 @@
 const solveSudoku = require("./sudoku");
 let conflict = [];
-let rows = [];
 
 class SudokuSolver {
     validate(puzzleString) {
-        const regex = /[^0-9.]/;
+        const regex = /[^1-9.]/;
         if (!puzzleString) return { error: "Required field missing" };
         if (puzzleString.length !== 81)
             return { error: "Expected puzzle to be 81 characters long" };
@@ -15,18 +14,25 @@ class SudokuSolver {
 
     checkRowPlacement(puzzleString, row, value) {
         conflict = [];
+        let rows = [];
         for (let i = 0; i < puzzleString.length; i += 9) {
             rows.push(puzzleString.slice(i, i + 9));
         }
         if (rows[row].includes(value)) {
             conflict.push("row");
+            return false;
+        } else {
+            return true;
         }
-        //console.log(conflict);
     }
 
-    checkColPlacement(column, value) {
+    checkColPlacement(puzzleString, column, value) {
         let cols = [];
         let cols2d = [];
+        let rows = [];
+        for (let i = 0; i < puzzleString.length; i += 9) {
+            rows.push(puzzleString.slice(i, i + 9));
+        }
         for (let j = 0; j < 9; j++) {
             for (let i = 0; i < 9; i++) {
                 cols2d.push(rows[i].slice(j, j + 1));
@@ -39,8 +45,10 @@ class SudokuSolver {
         }
         if (cols[column - 1].includes(value)) {
             conflict.push("column");
+            return false;
+        } else {
+            return true;
         }
-        //console.log(conflict);
     }
 
     checkRegionPlacement(puzzleString, region, value) {

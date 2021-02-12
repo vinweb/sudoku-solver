@@ -12,7 +12,23 @@ module.exports = function (app) {
         let puzzleString = req.body.puzzle;
         let value = req.body.value;
         let region;
-        //rows:
+
+        const regex = /[^1-9.]/;
+        const regexValue = /[1-9]/;
+        if (!req.body.coordinate || !req.body.value || !req.body.puzzle) {
+            return res.json({ error: "Required field(s) missing" });
+        }
+        if (puzzleString.length !== 81)
+            return res.json({
+                error: "Expected puzzle to be 81 characters long",
+            });
+        if (regex.test(puzzleString)) {
+            return res.json({ error: "Invalid characters in puzzle" });
+        }
+        if (!regexValue.test(value) || value.length !== 1) {
+            return res.json({ error: "Invalid value" });
+        }
+
         switch (coordinateArray[0]) {
             case "A":
                 row = "0";
@@ -41,6 +57,8 @@ module.exports = function (app) {
             case "I":
                 row = "8";
                 break;
+            default:
+                row = "9";
         }
         switch (req.body.coordinate) {
             case "A1":
@@ -142,21 +160,23 @@ module.exports = function (app) {
             case "I9":
                 region = "8";
                 break;
+            default:
+                region = "9";
+        }
+
+        if (region === "9") {
+            return res.json({ error: "Invalid coordinate" });
         }
         solver.checkRowPlacement(puzzleString, row, value);
-        solver.checkColPlacement(column, value);
+        solver.checkColPlacement(puzzleString, column, value);
         return res.json(
             solver.checkRegionPlacement(puzzleString, region, value)
         );
-
-        //cols:
-
-        //regions:
     });
 
     app.route("/api/solve").post((req, res) => {
         let puzzleString = req.body.puzzle;
-        const regex = /[^0-9.]/;
+        const regex = /[^1-9.]/;
         if (
             !puzzleString ||
             puzzleString.length !== 81 ||
