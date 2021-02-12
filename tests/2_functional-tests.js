@@ -116,7 +116,7 @@ suite("Functional Tests", () => {
     test("Check a puzzle placement with missing required fields: POST request to /api/check", function (done) {
         chai.request(server)
             .post("/api/check")
-            .send({ puzzle: puzzleString, coordinate: "A2", value: "" })
+            .send({ puzzle: puzzleString, coordinate: "", value: "" })
             .end(function (err, res) {
                 assert.equal(res.status, 200);
                 assert.equal(res.body.error, "Required field(s) missing");

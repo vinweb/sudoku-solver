@@ -6,6 +6,9 @@ module.exports = function (app) {
     let solver = new SudokuSolver();
 
     app.route("/api/check").post((req, res) => {
+        if (!req.body.coordinate || !req.body.value || !req.body.puzzle) {
+            return res.json({ error: "Required field(s) missing" });
+        }
         let coordinateArray = [...req.body.coordinate];
         let row;
         let column = coordinateArray[1];
@@ -15,9 +18,6 @@ module.exports = function (app) {
 
         const regex = /[^1-9.]/;
         const regexValue = /[1-9]/;
-        if (!req.body.coordinate || !req.body.value || !req.body.puzzle) {
-            return res.json({ error: "Required field(s) missing" });
-        }
         if (puzzleString.length !== 81)
             return res.json({
                 error: "Expected puzzle to be 81 characters long",
